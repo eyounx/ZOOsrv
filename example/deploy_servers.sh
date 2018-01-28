@@ -1,7 +1,7 @@
 #!/usr/bin/expect -f
 
-# This script is provided for automatic login and starting servers.
-# To use this shell script, users should modify the content and add customized command according to their servers. 
+# This script is provided for automatic login and deploying servers.
+# To use this shell script, users should modify the content and add customized command. 
 
 set loginuser "username" 
 set loginpass "yourpassword"
@@ -16,7 +16,7 @@ spawn ssh $loginuser@$ipaddr
 expect "*password:*" {send "$loginpass\r;"} # \r shouldn't be omitted
 expect "Last login:*" {
     send "cd $terminal_address\r"
-    # the script to run ZOOjl servers can be added.
+    # the script to start Distributed ZOOpt servers can be added.
     }
 
 interact
