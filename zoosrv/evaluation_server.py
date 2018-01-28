@@ -8,11 +8,11 @@ Author:
 import os
 import sys
 import socket
-from components.solution import Solution
-from components.loader import Loader
-from components.receive import receive
-from components.tool_function import ToolFunction
-from components.port_conflict import is_open
+from zoosrv.components.solution import Solution
+from zoosrv.components.loader import Loader
+from zoosrv.components.receive import receive
+from zoosrv.components.tool_function import ToolFunction
+from zoosrv.components.port_conflict import is_open
 import multiprocessing
 import ConfigParser
 
@@ -59,13 +59,12 @@ class EvaluationServer:
         s.listen(5)
         all_connect = 0
         restart = False
-        ToolFunction.log("evaluation process initializes successfully: ip=%s, port=%s" % (self.__server_ip, self.__server_port))
+        ToolFunction.log("Initialize evaluation process successfully: ip=%s, port=%s" % (self.__server_ip, self.__server_port))
         while True:
             # get x from client
             es, address = s.accept()
             # print all_connect + 1, ' get connected...'
             all_connect += 1
-            ToolFunction.log("connect num:"+str(all_connect)+" address:"+str(address))
             cmd = receive(self.__data_length, es)
             if cmd == "control server: shutdown":
                 es.sendall("success#")
@@ -92,6 +91,9 @@ class EvaluationServer:
                         c = calculate_constraint(Solution(x=x))
                         fx_x = str(fx) + ' ' + str(c) + "\n"
                         es.sendall(fx_x)
+                        msg = "Server:%s:%s f(x):%s constraint:%s connect num:%s client address:%s" % (
+                            self.__server_ip, self.__server_port, fx, c, all_connect, address)
+                        ToolFunction.log(msg)
                     elif msg == "asracos":
                         msg = receive(self.__data_length, es)
                         addr, func = msg.split(":")
@@ -107,8 +109,11 @@ class EvaluationServer:
                         fx = calculate(Solution(x=x))
                         fx_x = str(fx) + "\n"
                         es.sendall(fx_x)
+                        msg = "Server:%s:%s f(x):%s connect num:%s client address:%s" % (
+                            self.__server_ip, self.__server_port, fx, all_connect, address)
+                        ToolFunction.log(msg)
                     else:
-                        ToolFunction.log("Exception: %s method is unavailable" % msg)
+                        ToolFunction.log("Exception: %s method is not implemented" % msg)
                 except Exception, msg:
                     ToolFunction.log("Exception")
                     es.sendall("Exception: " + str(msg))
@@ -119,12 +124,12 @@ class EvaluationServer:
                 restart = True
                 break
             else:
-                ToolFunction.log("no such cmd")
+                ToolFunction.log("Command error: no such cmd")
             es.close()
-        ToolFunction.log("server close!")
+        ToolFunction.log("Server close!")
         s.close()
         if restart is True:
-            ToolFunction.log("server restart")
+            ToolFunction.log("Server restart")
             self.start_server(control_server, shared_fold)
 
     def explain_address(self, addr):
@@ -160,7 +165,7 @@ def run(port, shared_fold, control_server):
     server.start_server(control_server=control_server, shared_fold=shared_fold)
 
 
-def start_evaluation_server(configuration):
+def start(configuration):
     """
     Starting evaluation servers from configuration file.
 

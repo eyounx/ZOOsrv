@@ -5,8 +5,8 @@ Author:
     Yu-Ren Liu
 """
 
-from zoo_global import pos_inf, neg_inf, nan, gl
-from tool_function import ToolFunction
+from zoosrv.components.zoo_global import pos_inf, neg_inf, nan, gl
+from zoosrv.components.tool_function import ToolFunction
 
 
 class Solution:

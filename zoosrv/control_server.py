@@ -7,8 +7,8 @@ Author:
 
 import threading
 import socket
-from components.receive import receive
-from components.tool_function import ToolFunction
+from zoosrv.components.receive import receive
+from zoosrv.components.tool_function import ToolFunction
 import copy
 
 
@@ -44,7 +44,8 @@ class ControlServer:
             t.start()
         # start main thread
         while True:
-            cmd = int(raw_input("[zoojl] please input cmd, 1: print evaluation servers, 2: shut down evaluation servers, 3: exit\n"))
+            cmd = int(raw_input("[zoojl] Please input command sequence number, 1: print evaluation servers, 2: "
+                                "shut down evaluation servers, 3: exit\n"))
             with lock:
                 if cmd == 1:
                     ToolFunction.log("The number of evaluation servers: %s" % len(self.evaluation_server))
@@ -71,7 +72,7 @@ class ControlServer:
                 ip_port = receive(1024, client)
                 if ip_port not in self.evaluation_server:
                     self.evaluation_server.append(ip_port)
-                    ToolFunction.log("receive ip_port from evaluation server: " + ip_port)
+                    ToolFunction.log("Receive ip_port from evaluation server: " + ip_port)
             # send to client
             elif cmd == "client: require servers":
                 require_num = int(receive(1024, client))
@@ -83,15 +84,18 @@ class ControlServer:
                     else:
                         msg = msg + ' ' + self.evaluation_server[i]
                 if require_num == 0:
-                    msg += "No available evaluation server"
+                    msg += "No available evaluation process"
                 msg += '\n'
                 self.evaluation_server = self.evaluation_server[require_num:]
-                client.sendall('get %d evaluation server\n' % require_num)
+                if require_num <= 1:
+                    client.sendall('Get %d evaluation process\n' % require_num)
+                else:
+                    client.sendall('Get %d evaluation processes\n' % require_num)
                 client.sendall(msg)
             # receive from client
             elif cmd == "client: return servers":
                 data_str = receive(1024, client)
-                ToolFunction.log("receive ip_port from client: " + data_str)
+                ToolFunction.log("Receive ip_port from client: " + data_str)
                 ip_ports = data_str.split()
                 for ip_port in ip_ports:
                     if ip_port not in self.evaluation_server:
@@ -99,7 +103,7 @@ class ControlServer:
             # exception happens at client. restart evaluation servers
             elif cmd == "client: restart":
                 data_str = receive(1024, client)
-                ToolFunction.log("client exception, receive ip_port from client: " + data_str)
+                ToolFunction.log("Client exception, receive ip_port from client: " + data_str)
                 ip_ports = data_str.split()
                 for ip_port in ip_ports:
                     if ip_port not in self.evaluation_server:
@@ -110,7 +114,7 @@ class ControlServer:
                         s.sendall("control server: restart\n")
                         self.evaluation_server.append(ip_port)
             else:
-                ToolFunction.log("command error")
+                ToolFunction.log("Command error")
 
     def shut_down_control(self):
         """
@@ -171,16 +175,15 @@ class ControlServer:
         es.close()
 
 
-def start_control_server(port):
+def start(port):
     """
-    Api of starting the control server.
+    Start the control server.
 
     :param port:
-        The ports occupied by the control server
-        port is a list having four elements, for example, [10000, 10001, 10002, 10003]
+        The port occupied by the control server
     :return: no return
     """
     local_ip = socket.gethostbyname(socket.gethostname())
-    ToolFunction.log("control server ip: " + local_ip)
+    ToolFunction.log("Control server ip_port: %s:%s" %(local_ip, port))
     cs = ControlServer(local_ip, port)
     cs.start()

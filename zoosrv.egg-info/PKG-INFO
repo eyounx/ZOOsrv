@@ -1,0 +1,23 @@
+Metadata-Version: 1.1
+Name: zoosrv
+Version: 0.1
+Summary: Python Servers for Distributed Zeroth-Order Optimization
+Home-page: https://github.com/eyounx/ZOOsrv
+Author: Yu-Ren Liu, Yang Yu
+Author-email: yuy@nju.edu.cn
+License: MIT License
+Description: UNKNOWN
+Platform: all
+Classifier: Development Status :: 4 - Beta
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: Implementation
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Topic :: Software Development :: Libraries
