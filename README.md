@@ -1,11 +1,15 @@
-# Python Server
+# ZOOsrv
 
-`control_server.py`:  you can run this file to start the control server.
+ZOOsrv is a Python package containing servers of distributed zeroth-order optimization.
 
-`evaluation_server.py`:  after writing the `evaluation_server.cfg`, you can run this file to start the evaluation servers.
+## Installation
 
-`evaluation_server.cfg`: a configuration text used by  `evaluation_server.py`. It's explaination can be found in [Quick Start](https://github.com/eyounx/ZOOjl/wiki/Quick-Start).
+The easiest way to get ZOOsrv is to type `pip install zoosrv` in you terminal/command line.
 
-`components`: include modules used by `control_server.py` and `evaluation_server.py`.
+If you want to install ZOOsrv by source code, download this project and sequentially run following commands in your terminal/command line.
 
-`login.sh`: this script is provided for automatic login and starting servers on users' servers.
+```
+$ python setup.py build
+$ python setup.py install
+```
+
