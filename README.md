@@ -8,6 +8,8 @@ ZOOsrv is the server part of Distributed [ZOOpt](https://github.com/eyounx/ZOOpt
 
 **Single-thread version:** [ZOOpt](https://github.com/eyounx/ZOOpt)
 
+**Client part of Distributed ZOOpt**: [ZOOclient](https://github.com/eyounx/ZOOjl.jl)
+
 ## Installation
 
 The easiest way to get ZOOsrv is to type `pip install zoosrv` in you terminal/command line.
