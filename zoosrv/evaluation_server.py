@@ -185,7 +185,7 @@ def start(configuration):
     section = conf.sections()[0]
     options = conf.options(section)
     shared_fold = conf.get(section, "shared fold")
-    control_server = conf.get(section, "control server's ip_port")
+    control_server = conf.get(section, "control server ip_port")
     num = conf.getint(section, "evaluation processes")
     starting_port = conf.getint(section, "starting port")
     ending_port = conf.getint(section, "ending port")
