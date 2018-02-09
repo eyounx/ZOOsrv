@@ -44,7 +44,7 @@ class ControlServer:
             t.start()
         # start main thread
         while True:
-            cmd = int(raw_input("[zoojl] Please input command sequence number, 1: print evaluation servers, 2: "
+            cmd = int(input("[zoojl] Please input command sequence number, 1: print evaluation servers, 2: "
                                 "shut down evaluation servers, 3: exit\n"))
             with lock:
                 if cmd == 1:
@@ -66,7 +66,7 @@ class ControlServer:
         while True:
             client, address = s.accept()
             cmd = receive(1024, client)
-            client.sendall("success#\n")
+            client.sendall("success#\n".encode())
             # receive from evaluation servers
             if cmd == "evaluation server":
                 ip_port = receive(1024, client)
@@ -88,10 +88,10 @@ class ControlServer:
                 msg += '\n'
                 self.evaluation_server = self.evaluation_server[require_num:]
                 if require_num <= 1:
-                    client.sendall('Get %d evaluation process\n' % require_num)
+                    client.sendall(('Get %d evaluation process\n' % require_num).encode())
                 else:
-                    client.sendall('Get %d evaluation processes\n' % require_num)
-                client.sendall(msg)
+                    client.sendall(('Get %d evaluation processes\n' % require_num).encode())
+                client.sendall(msg.encode())
             # receive from client
             elif cmd == "client: return servers":
                 data_str = receive(1024, client)
@@ -111,7 +111,7 @@ class ControlServer:
                         port = int(port)
                         addr = (ip, port)
                         s.connect(addr)
-                        s.sendall("control server: restart\n")
+                        s.sendall("control server: restart\n".encode())
                         self.evaluation_server.append(ip_port)
             else:
                 ToolFunction.log("Command error")
@@ -127,7 +127,7 @@ class ControlServer:
             ToolFunction.log("1.all ==> shut down all servers. e.g. all")
             ToolFunction.log("2.ip:ip1 ==> shut down all servers having ip1 as ip. e.g. ip:127.0.0.1")
             ToolFunction.log("3.ip_port: ip1:port1 ip2:port2 ip3:port3 ... ==> shut down specific servers. e.g. ip_port: 127.0.0.1:20000 127.0.0.1:20001")
-            msg = raw_input("")
+            msg = input("")
             new_cal_server = copy.deepcopy(self.evaluation_server)
             if msg == "all":
                 for ip_port in self.evaluation_server:
@@ -166,7 +166,7 @@ class ControlServer:
         port = int(port)
         addr = (ip, port)
         es.connect(addr)
-        es.sendall("control server: shutdown#")
+        es.sendall("control server: shutdown#".encode())
         result = receive(1024, es)
         if result == "success":
             ToolFunction.log("%s: manage to shut down" % ip_port)

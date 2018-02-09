@@ -14,7 +14,7 @@ from zoosrv.components.receive import receive
 from zoosrv.components.tool_function import ToolFunction
 from zoosrv.components.port_conflict import is_open
 import multiprocessing
-import ConfigParser
+import configparser
 
 
 class EvaluationServer:
@@ -48,9 +48,9 @@ class EvaluationServer:
         # send evaluation server address to control server
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((self.explain_address(control_server)))
-        s.sendall("evaluation server#")
+        s.sendall("evaluation server#".encode())
         receive(self.__data_length, s)
-        s.sendall(self.__server_ip + ':' + str(self.__server_port) + "#")
+        s.sendall((self.__server_ip + ':' + str(self.__server_port) + "#").encode())
         s.close()
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -67,17 +67,17 @@ class EvaluationServer:
             all_connect += 1
             cmd = receive(self.__data_length, es)
             if cmd == "control server: shutdown":
-                es.sendall("success#")
+                es.sendall("success#".encode())
                 break
             elif cmd == "client: calculate":
-                es.sendall("calculate\n")
+                es.sendall("calculate\n".encode())
                 try:
                     msg = receive(self.__data_length, es)
-                    es.sendall("receive\n")
+                    es.sendall("receive\n".encode())
                     if msg == "pposs":
                         msg = receive(self.__data_length, es)
                         addr, func, constraint = msg.split(":")
-                        es.sendall("receive\n")
+                        es.sendall("receive\n".encode())
                         load = Loader()
                         module = load.load(shared_fold + addr)
                         calculate_fx = module[func]
@@ -90,17 +90,17 @@ class EvaluationServer:
                         fx = calculate_fx(Solution(x=x))
                         c = calculate_constraint(Solution(x=x))
                         fx_x = str(fx) + ' ' + str(c) + "\n"
-                        es.sendall(fx_x)
+                        es.sendall(fx_x.encode())
                         msg = "Server:%s:%s f(x):%s constraint:%s connect num:%s client address:%s" % (
                             self.__server_ip, self.__server_port, fx, c, all_connect, address)
                         ToolFunction.log(msg)
                     elif msg == "asracos":
                         msg = receive(self.__data_length, es)
                         addr, func = msg.split(":")
-                        es.sendall("receive\n")
+                        es.sendall("receive\n".encode())
                         load = Loader()
                         module = load.load(shared_fold + addr)
-                        calculate = module[func]
+                        calculate = module[str(func)]
                         data = receive(self.__data_length, es)
                         x = []
                         data_str = data.split(' ')
@@ -108,15 +108,15 @@ class EvaluationServer:
                             x.append(float(istr))
                         fx = calculate(Solution(x=x))
                         fx_x = str(fx) + "\n"
-                        es.sendall(fx_x)
+                        es.sendall(fx_x.encode())
                         msg = "Server:%s:%s f(x):%s connect num:%s client address:%s" % (
                             self.__server_ip, self.__server_port, fx, all_connect, address)
                         ToolFunction.log(msg)
                     else:
                         ToolFunction.log("Exception: %s method is not implemented" % msg)
-                except Exception, msg:
+                except BaseException as msg:
                     ToolFunction.log("Exception")
-                    es.sendall("Exception: " + str(msg))
+                    es.sendall(("Exception: " + str(msg)).encode())
                     restart = True
                     break
                 # print ("send result finished, result: " + str(fx_x))
@@ -180,7 +180,7 @@ def start(configuration):
         2 means opening 2 server, 60003 and 60010 mean these servers can use port between 60003 and 60010([60003, 60010])
     :return: no return value
     """
-    conf = ConfigParser.ConfigParser()
+    conf = configparser.ConfigParser()
     conf.read(configuration)
     section = conf.sections()[0]
     options = conf.options(section)

@@ -26,7 +26,7 @@ class Loader(object):
         """
         try:
             tmp = {}
-            exec open(path).read() in tmp
+            exec(open(path).read(), tmp, tmp)
             return tmp
         except:
             print("Load module [path %s] error: %s"

@@ -16,7 +16,7 @@ def receive(data_length, es):
     """
     data_str = ""
     while True:
-        data_tmp = es.recv(data_length)
+        data_tmp = es.recv(data_length).decode()
         stop = data_tmp.find("#")
         if stop > 0:
             data_tmp = data_tmp[0:stop]
