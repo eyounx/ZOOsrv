@@ -5,6 +5,7 @@ Author:
     Yu-Ren Liu
 """
 
+from __future__ import print_function
 import threading
 import socket
 from zoosrv.components.receive import receive
@@ -29,6 +30,10 @@ class ControlServer:
         self.port = port
         # for example, elements are ["192.168.1.101:5555", "192.168.1.102:10000"]
         self.evaluation_server = []
+        try:
+            self.input = raw_input
+        except NameError:
+            self.input = input
 
     def start(self):
         """
@@ -44,7 +49,7 @@ class ControlServer:
             t.start()
         # start main thread
         while True:
-            cmd = int(input("[zoojl] Please input command sequence number, 1: print evaluation servers, 2: "
+            cmd = int(self.input("[zoojl] Please input command sequence number, 1: print evaluation servers, 2: "
                                 "shut down evaluation servers, 3: exit\n"))
             with lock:
                 if cmd == 1:
@@ -127,7 +132,7 @@ class ControlServer:
             ToolFunction.log("1.all ==> shut down all servers. e.g. all")
             ToolFunction.log("2.ip:ip1 ==> shut down all servers having ip1 as ip. e.g. ip:127.0.0.1")
             ToolFunction.log("3.ip_port: ip1:port1 ip2:port2 ip3:port3 ... ==> shut down specific servers. e.g. ip_port: 127.0.0.1:20000 127.0.0.1:20001")
-            msg = input("")
+            msg = self.input()
             new_cal_server = copy.deepcopy(self.evaluation_server)
             if msg == "all":
                 for ip_port in self.evaluation_server:
@@ -149,7 +154,7 @@ class ControlServer:
                 ToolFunction.log("No such command")
             self.evaluation_server = new_cal_server
         except Exception as e:
-            ToolFunction.log("input error", e)
+            ToolFunction.log("input error")
 
     def shut_down(self, ip_port):
         """
