@@ -97,6 +97,7 @@ class ControlServer:
                 else:
                     client.sendall(('Get %d evaluation processes\n' % require_num).encode())
                 client.sendall(msg.encode())
+                ToolFunction.log("provide %d evaluation servers for task: %s" % (require_num, address))
             # receive from client
             elif cmd == "client: return servers":
                 data_str = receive(1024, client)
