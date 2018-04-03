@@ -114,9 +114,10 @@ class EvaluationServer:
                         ToolFunction.log(msg)
                     else:
                         ToolFunction.log("Exception: %s method is not implemented" % msg)
-                except BaseException as msg:
+                except BaseException as excepmsg:
                     ToolFunction.log("Exception")
-                    es.sendall(("Exception: " + str(msg)).encode())
+                    ToolFunction.log(excepmsg)
+                    es.sendall(("Exception: " + str(excepmsg)).encode())
                     restart = True
                     break
                 # print ("send result finished, result: " + str(fx_x))
