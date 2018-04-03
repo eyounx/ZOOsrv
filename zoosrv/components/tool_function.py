@@ -47,4 +47,4 @@ class ToolFunction:
         :param text: text to output
         :return: no return
         """
-        print('[zoojl] '+text)
+        print('[zoosrv] '+text)

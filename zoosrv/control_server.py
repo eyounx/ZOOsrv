@@ -49,7 +49,7 @@ class ControlServer:
             t.start()
         # start main thread
         while True:
-            cmd = int(self.input("[zoojl] Please input command sequence number, 1: print evaluation servers, 2: "
+            cmd = int(self.input("[zoosrv] Please input command sequence number, 1: print evaluation servers, 2: "
                                 "shut down evaluation servers, 3: exit\n"))
             with lock:
                 if cmd == 1:
