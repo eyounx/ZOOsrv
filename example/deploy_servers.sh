@@ -1,23 +1,16 @@
-#!/usr/bin/expect -f
+#! /bin/bash
 
 # This script is provided for automatic login and deploying servers.
 # To use this shell script, users should modify the content and add customized command. 
 
-set loginuser "username" 
-set loginpass "yourpassword"
-set terminal_address yourdirectory # e.g. /Julia-0.6.app/Contents/Resources/julia/bin/julia
+# TODO: These variables should be set by users
+login_clusters=("c01n04" "c01n06")
+password="lamdaer"
+script="~/liuyr/ZOOsrv/example/deploy_servers.exp"
 
-set ipaddr "serverip" # e.g. "114.212.190.147"
-set timeout 30
+len=${#login_clusters[@]}
 
-spawn ssh $loginuser@$ipaddr
-# expect "*yes/no*" {send "yes\n"}
-
-expect "*password:*" {send "$loginpass\r;"} # \r shouldn't be omitted
-expect "Last login:*" {
-    send "cd $terminal_address\r"
-    # the script to start Distributed ZOOpt servers can be added.
-    }
-
-interact
-exit
+for ((i=0; i<${len}; ++i))
+do
+    expect ${script} ${login_clusters[$i]} ${password} &
+done

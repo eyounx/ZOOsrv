@@ -1,0 +1,19 @@
+#!/usr/bin/expect -f
+
+# This script is provided for automatic login and deploying servers.
+# To use this shell script, users should modify the content and add customized command.
+
+set timeout 5
+
+
+set cluster [lindex $argv 0]
+set password [lindex $argv 1]
+# TODO: This variable should be customized by users
+set evaluation_server "~/liuyr/ZOOsrv/example/start_evaluation_server.py"
+
+spawn ssh $cluster
+expect  "*password:*" {send "$password\r"; exp_continue}
+expect "Last login*" {send "screen -R liuyr_evaluation_server\r"}
+send "python ${evaluation_server}\r"
+expect eof
+exit
